@@ -1,4 +1,4 @@
-# Prime Number Calculator ![Donate](https://img.shields.io/badge/Donate-Crypto-yellow?style=flat-square)
+# Prime Number Calculator ![Donate](https://img.shields.io/badge/Donate-Crypto-yellow?style=flat-square) [![CodeQL](https://github.com/DEADSEC-SECURITY/Prime-Number-Calculator/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/DEADSEC-SECURITY/Prime-Number-Calculator/actions/workflows/codeql-analysis.yml)
 
 This program will compute the prime numbers for a given range
 
