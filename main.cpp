@@ -109,5 +109,10 @@ int main() {
 
     cout << "Prime numbers found: " << primes_count << endl;
 
+    delete &number_of_threads;
+    delete &batch_size;
+    delete &check_unit;
+    delete &threads;
+
     return 0;
 }
