@@ -20,8 +20,8 @@ int get_primes(int start, int end) {
     for (int current_number = start; current_number < end; current_number++) {
         divisible_count = 0;
 
-        // We can exclude numbers that are divisible by 10 or 2
-        if (current_number != 2 && (current_number % 10 == 0 || current_number % 2 == 0)) {
+        // We can exclude numbers that are divisible by 5 or 2
+        if ((current_number != 2 && current_number != 5) && (current_number % 5 == 0 || current_number % 2 == 0)) {
             continue;
         }
 
@@ -53,6 +53,13 @@ int get_primes(int start, int end) {
         primes_count += prime_count;
     }
     cout << "Thread " << id << " - " << start << " - " << end << " finished and found " << prime_count << " prime numbers" << endl;
+
+    delete &id;
+    delete &half_of_current_number;
+    delete &divisible_count;
+    delete &prime_numbers;
+    delete &prime_count;
+
     return 0;
 }
 
