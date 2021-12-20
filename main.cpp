@@ -19,22 +19,26 @@ int get_primes(int start, int end) {
 
     for (int current_number = start; current_number < end; current_number++) {
         divisible_count = 0;
+
+        // We can exclude numbers that are divisible by 10 or 2
+        if (current_number != 2 && (current_number % 10 == 0 || current_number % 2 == 0)) {
+            continue;
+        }
+
         half_of_current_number = current_number / 2;
-        for (int i = 1; i <= current_number; ++i) {
+        for (int i = 1; i <= half_of_current_number; i++) {
             // If the current number is divisible by i, it is not prime
             if (current_number % i == 0) {
                 divisible_count++;
-            }
-            // To find a prime number we only need to reach the middle of the number
-            if (half_of_current_number == i) {
-                divisible_count++;
-                break;
             }
             // If the number reached more than 2 divisors, it is not prime
             if (divisible_count > 2) {
                 break;
             }
         }
+        // We always add 1 more divisor because it will always be divisible by it self
+        divisible_count++;
+
         // If the number has 2 divisors, it is prime
         if (divisible_count == 2) {
             if (SAVE_PRIMES) {
@@ -56,8 +60,8 @@ int main() {
     cout << "Starting discovering primes ..." << endl;
 
     int number_of_threads = 10;
-    int batch_size = 1000;
-    int check_unit = 10000;
+    int batch_size = 10000;
+    int check_unit = 6000000;
     // Create vector for threads and reserve number_of_threads of spaces
     vector<future<int>> threads;
     threads.reserve(number_of_threads);
