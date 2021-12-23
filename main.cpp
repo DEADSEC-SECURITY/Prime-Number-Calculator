@@ -2,13 +2,14 @@
 #include <vector>
 #include <thread>
 #include <future>
-
-#define SAVE_PRIMES false
+#include <fstream>
+#include <sys/stat.h>
 
 using namespace std;
 
 vector<int> primes;
 int primes_count = 0;
+bool SAVE_PRIMES = false;
 
 int get_primes(int start, int end) {
     thread::id id = this_thread::get_id();
@@ -42,25 +43,33 @@ int get_primes(int start, int end) {
         // If the number has 2 divisors, it is prime
         if (divisible_count == 2) {
             if (SAVE_PRIMES) {
-                primes.push_back(current_number);
+                prime_numbers.push_back(current_number);
             }
             prime_count++;
         }
     }
-    if (SAVE_PRIMES) {
-        primes.insert(primes.end(), prime_numbers.begin(), prime_numbers.end());
-    } else {
-        primes_count += prime_count;
-    }
+    primes.insert(primes.end(), prime_numbers.begin(), prime_numbers.end());
+    primes_count += prime_count;
     cout << "Thread " << id << " - " << start << " - " << end << " finished and found " << prime_count << " prime numbers" << endl;
 
-    delete &id;
-    delete &half_of_current_number;
-    delete &divisible_count;
-    delete &prime_numbers;
-    delete &prime_count;
-
     return 0;
+}
+
+bool folderExists(const string& path) {
+    struct stat info{};
+    // Check if folder exists
+    if (info.st_mode & S_IFDIR) {
+        return true;
+    }
+    return false;
+}
+
+void createFolder(const string& path) {
+    // Check if folder already exists
+    if (!folderExists(path)) {
+        // Create folder
+        mkdir(path.c_str(), 0777);
+    }
 }
 
 int main() {
@@ -73,6 +82,19 @@ int main() {
     vector<future<int>> threads;
     threads.reserve(number_of_threads);
 
+    // Create output folder
+    createFolder("./output");
+
+    // Ask user if they want to save primes to file
+    cout << "Should we save primes? (y/n)" << endl;
+    char save_primes;
+    cin >> save_primes;
+    if (save_primes == 'y') {
+        SAVE_PRIMES = true;
+        cout << "Primes will be saved to ./output/primes.txt" << endl;
+    }
+
+    cout << "------------------------------------" << endl;
     cout << "Limit of threads: " << number_of_threads << endl;
     cout << "Total threads: " << check_unit / batch_size << endl;
     cout << "Batch size: " << batch_size << endl;
@@ -109,10 +131,15 @@ int main() {
 
     cout << "Prime numbers found: " << primes_count << endl;
 
-    delete &number_of_threads;
-    delete &batch_size;
-    delete &check_unit;
-    delete &threads;
+    // Create/Open output file inside output folder
+    ofstream output_file;
+    output_file.open("./output/primes.txt");
+    cout << "Writing primes to file ..." << endl;
+    for (int prime : primes) {
+        output_file << prime << endl;
+    }
+    cout << "Finished writing primes to file" << endl;
+    output_file.close();
 
     return 0;
 }
